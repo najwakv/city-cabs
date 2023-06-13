@@ -39,11 +39,11 @@ const Container = ({socket}) => {
         // const driverCheck = await dataobject.filter(
         //   (item) => item.driverId == driverId
         //   );
-        console.log(driverId, 'driverId');
+        const driverIds = localStorage.getItem("driverId")
+        console.log(driverIds, 'driverId');
         console.log(dataobject, 'dataObject');
-        const driverId = localStorage.getItem("driverId")
           for(let i=0;i<dataobject.length;i++) {
-            if(dataobject[i].driverId == driverId) {
+            if(dataobject[i].driverId == driverIds) {
               console.log('yes');
             }
           }
