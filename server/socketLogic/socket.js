@@ -4,9 +4,15 @@ import bookingModel from "../model/booking.js";
 import driverModel from "../model/driver.js";
 
 export default function initializeSocket(httpServer) {
+  // const io = new Server(httpServer, {
+  //   cors: {
+  //     origin: ["http://localhost:2000", "http://localhost:3000"],
+  //     credentials: true,
+  //   },
+  // });
   const io = new Server(httpServer, {
     cors: {
-      origin: ["http://localhost:2000", "http://localhost:3000"],
+      origin: "*",
       credentials: true,
     },
   });
