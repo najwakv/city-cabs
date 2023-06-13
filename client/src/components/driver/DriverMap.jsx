@@ -3,8 +3,8 @@ import MapGL, { GeolocateControl, Marker, Popup } from "react-map-gl";
 import tw from "tailwind-styled-components";
 import { toast } from "react-hot-toast";
 import socketIO from "socket.io-client";
-const socket = socketIO.connect("http://localhost:4000");
-// const socket = socketIO.connect("https://city-cabs.onrender.com");
+// const socket = socketIO.connect("http://localhost:4000");
+const socket = socketIO.connect("https://city-cabs.onrender.com");
 
 const DriverMap = ({ pickup, dropoff, notificationId }) => {
   const [pickupCoordinates, setPickupCoordinates] = useState([0, 0]);

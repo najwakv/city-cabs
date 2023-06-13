@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import tw from "tailwind-styled-components";
 import { useNavigate } from "react-router-dom";
