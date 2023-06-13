@@ -20,6 +20,7 @@ const Container = ({socket}) => {
       .post("/getDriverId", { token })
       .then((response) => {
         setDriverId(response.data.driverId);
+        console.log(response.data)
         console.log(response.data.driverId);
       })
       .catch((error) => {
