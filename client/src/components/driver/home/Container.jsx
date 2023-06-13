@@ -34,9 +34,14 @@ const Container = ({socket}) => {
     let intervalId = setInterval(() => {
       socket.on("notification", async (data) => {
         const dataobject = data[0].drivers;
-        const driverCheck = await dataobject.filter(
-          (item) => item.driverId == driverId
-          );
+        // const driverCheck = await dataobject.filter(
+        //   (item) => item.driverId == driverId
+        //   );
+          for(let i=0;i<dataobject.length;i++) {
+            if(dataobject[i].driverId == driverId) {
+              console.log('yes');
+            }
+          }
           console.log(driverCheck, 'dataaaaaaaaaaaaaaaaaaa');
         const statusVerification = driverCheck.length > 0 && driverCheck[0].status === true;
         statusVerification && setNotifications(data);
