@@ -36,17 +36,17 @@ const Container = ({socket}) => {
     let intervalId = setInterval(() => {
       socket.on("notification", async (data) => {
         const dataobject = data[0].drivers;
-        // const driverCheck = await dataobject.filter(
-        //   (item) => item.driverId == driverId
-        //   );
         const driverIds = localStorage.getItem("driverId")
+        const driverCheck = await dataobject.filter(
+          (item) => item.driverId == driverIds
+          );
         console.log(driverIds, 'driverId');
         console.log(dataobject, 'dataObject');
-          for(let i=0;i<dataobject.length;i++) {
-            if(dataobject[i].driverId == driverIds) {
-              console.log('yes');
-            }
-          }
+          // for(let i=0;i<dataobject.length;i++) {
+          //   if(dataobject[i].driverId == driverIds) {
+          //     console.log('yes');
+          //   }
+          // }
           console.log(driverCheck, 'dataaaaaaaaaaaaaaaaaaa');
         const statusVerification = driverCheck.length > 0 && driverCheck[0].status === true;
         statusVerification && setNotifications(data);
