@@ -20,6 +20,7 @@ const Container = ({socket}) => {
       .post("/getDriverId", { token })
       .then((response) => {
         setDriverId(response.data.driverId);
+        localStorage.setItem("driverId", response.data.driverId);
         console.log(response.data)
         console.log(response.data.driverId);
       })
@@ -40,6 +41,7 @@ const Container = ({socket}) => {
         //   );
         console.log(driverId, 'driverId');
         console.log(dataobject, 'dataObject');
+        const driverId = localStorage.getItem("driverId")
           for(let i=0;i<dataobject.length;i++) {
             if(dataobject[i].driverId == driverId) {
               console.log('yes');
