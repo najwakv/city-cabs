@@ -1,7 +1,7 @@
 import React from "react";
 import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
-import video from "../../assets/video/bg.mp4";
+// import video from "../../assets/video/bg.mp4";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -9,14 +9,14 @@ const Dashboard = () => {
     <>
       <Navbar />
       <section className="relative bg-video h-screen w-screen">
-        <video
+        {/* <video
           autoPlay
           loop
           muted
           className="absolute inset-0 w-full h-full object-cover"
           type="video/mp4"
           src={video}
-        ></video>{" "}
+        ></video>{" "} */}
         <div className="absolute inset-0 "></div>
         <div className="relative mx-auto max-w-screen-xl px-4 py-32 sm:px-6 lg:flex lg:h-screen lg:items-center lg:px-8">
           <div className="max-w-xl text-center sm:text-left py-14 bg-white sm:pl-5 rounded-sm bg-opacity-50">
