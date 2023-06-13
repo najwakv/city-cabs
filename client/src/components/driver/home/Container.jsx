@@ -32,9 +32,9 @@ const Container = ({socket}) => {
 
   useEffect(() => {
     let intervalId = setInterval(() => {
-      socket.on("notification", (data) => {
+      socket.on("notification", async (data) => {
         const dataobject = data[0].drivers;
-        const driverCheck = dataobject.filter(
+        const driverCheck = await dataobject.filter(
           (item) => item.driverId == driverId
           );
           console.log(driverCheck, 'dataaaaaaaaaaaaaaaaaaa');
