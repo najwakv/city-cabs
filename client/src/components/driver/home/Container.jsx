@@ -37,7 +37,7 @@ const Container = ({socket}) => {
         const driverCheck = dataobject.filter(
           (item) => item.driverId == driverId
           );
-          console.log(driverCheck, 'dataaaaaaaaaaaaaaaaaaa');
+          console.log(dataobject, 'dataaaaaaaaaaaaaaaaaaa');
         const statusVerification = driverCheck.length > 0 && driverCheck[0].status === true;
         statusVerification && setNotifications(data);
       });
