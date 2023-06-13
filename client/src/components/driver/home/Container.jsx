@@ -38,8 +38,7 @@ const Container = ({socket}) => {
           (item) => item.driverId == driverId
           );
           console.log(driverCheck, 'dataaaaaaaaaaaaaaaaaaa');
-        const statusVerification =
-          driverCheck.length > 0 && driverCheck[0].status === true;
+        const statusVerification = driverCheck.length > 0 && driverCheck[0].status === true;
         statusVerification && setNotifications(data);
       });
       return () => {
