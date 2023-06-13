@@ -3,8 +3,8 @@ import axios from "axios";
 //-----------------Instance-----------------//
 
 export const driverInstance = axios.create({
-  // baseURL: "http://localhost:4000/api/driver",
-  baseURL: "https://city-cabs.onrender.com/api/driver",
+  baseURL: "http://localhost:4000/api/driver",
+  // baseURL: "https://city-cabs.onrender.com/api/driver",
 });
 
 //-----------------Axios Interceptors-----------------//

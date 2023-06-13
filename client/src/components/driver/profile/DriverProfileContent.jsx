@@ -40,7 +40,7 @@ function DriverProfileContent() {
       }
     }
     fetchTripHistory();
-  }, []);
+  }, [driverId]);
   return (
     <div className="h-screen flex flex-col">
       <ButtonContainer>

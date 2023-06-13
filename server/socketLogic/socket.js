@@ -220,6 +220,7 @@ export default function initializeSocket(httpServer) {
           otp: otp,
         });
         if (verifyData) {
+          io.emit("verifyData", verifyData)
           io.emit("verifyRideResponse", { message: "Ride verified successfully" });
         } else {
           io.emit("notVerifyRideResponse", { message: "Invalid otp" });

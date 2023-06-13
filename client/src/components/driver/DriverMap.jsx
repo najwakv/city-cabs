@@ -3,8 +3,8 @@ import MapGL, { GeolocateControl, Marker, Popup } from "react-map-gl";
 import tw from "tailwind-styled-components";
 import { toast } from "react-hot-toast";
 import socketIO from "socket.io-client";
-// const socket = socketIO.connect("http://localhost:4000");
-const socket = socketIO.connect("https://city-cabs.onrender.com");
+const socket = socketIO.connect("http://localhost:4000");
+// const socket = socketIO.connect("https://city-cabs.onrender.com");
 
 const DriverMap = ({ pickup, dropoff, notificationId }) => {
   const [pickupCoordinates, setPickupCoordinates] = useState([0, 0]);
@@ -73,19 +73,27 @@ const DriverMap = ({ pickup, dropoff, notificationId }) => {
     if (pickup) {
       setCoordinates(true);
       getPickupCoordinates(pickup);
+      setStatus(true)
     } else {
       setCoordinates(false);
       setPickupCoordinates([0, 0]);
+      setStatus(false)
     }
 
     if (dropoff) {
       setCoordinates(true);
       getDropoffCoordinates(dropoff);
+      setStatus(true)
     } else {
       setCoordinates(false);
       setDropoffCoordinates([0, 0]);
+      setStatus(false)
     }
   }, [pickup, dropoff]);
+
+  useEffect(()=> {
+    console.log(status,'handlingaccept')
+  },[status])
 
   //get pickup coordinate
   const getPickupCoordinates = (pickup) => {
@@ -158,7 +166,7 @@ const DriverMap = ({ pickup, dropoff, notificationId }) => {
     socket.on("verifyRideResponse", (data) => {
       console.log(data.message);
       setForm(false);
-      setStatus(true);
+      setStatus(false);
     });
     return () => {
       socket.off("verifyRideResponse");
@@ -168,6 +176,7 @@ const DriverMap = ({ pickup, dropoff, notificationId }) => {
   useEffect(() => {
     socket.on("notVerifyRideResponse", (data) => {
       console.log(data.message);
+      setStatus(null)
     });
     return () => {
       socket.off("notVerifyRideResponse");
@@ -176,6 +185,7 @@ const DriverMap = ({ pickup, dropoff, notificationId }) => {
 
   const handlePayment = (e) => {
     e.preventDefault();
+    console.log('end ')
     socket.emit("handlePayment", { verifyData });
   };
 
@@ -192,9 +202,12 @@ const DriverMap = ({ pickup, dropoff, notificationId }) => {
 
   const fare = paymentData?.[0]?.fare;
 
+  console.log(fare,'this is fare')
+
   const closePaymentModal = () => {
     setStatus(null);
     setPaymentStatus(false);
+    setCoordinates(false)
     socket.emit("confirmOfflinePayment", verifyData);
   };
 
@@ -203,6 +216,7 @@ const DriverMap = ({ pickup, dropoff, notificationId }) => {
   useEffect(() => {
     socket.on("verifyPaymentSuccess", () => {
       setStatus(null);
+      setCoordinates(false)
     });
     return () => {
       socket.off("verifyPaymentSuccess");
@@ -268,7 +282,6 @@ const DriverMap = ({ pickup, dropoff, notificationId }) => {
               <Container>
                 <Greeting>Hello </Greeting>
                 <ActionContainer>
-                  <ActionButton></ActionButton>
                   {status === true && (
                     <Labels onClick={handleModal}>
                       <LabelTitle>Start journey</LabelTitle>
@@ -392,9 +405,6 @@ const ActionContainer = tw.a`
 `;
 const Labels = tw.div`
     flex-grow-1 
-`;
-const ActionButton = tw.i`
-    las la-search text-xl text-white
 `;
 const LabelTitle = tw.h3`
   text-gray-200 text-lg cursor-pointer 

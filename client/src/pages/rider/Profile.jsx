@@ -20,9 +20,9 @@ function Profile() {
         const response = await instance.post('/getUserData', {
             token,
         });
-        // console.log(response.data.userName);
         setUserDetails(response.data.userDetails);
-        setUserId(response.data.userDetails.userId);
+        setUserId(response.data.userDetails._id);
+        console.log(response.data.userDetails._id)
       } catch (error) {
         console.log(error);
       }
@@ -30,19 +30,23 @@ function Profile() {
     fetchUserData();
 
     // Fetch trip history
+   
+  }, []);
+
+  useEffect(()=>{
     const fetchTripHistory = async () => {
       try {
-        const response = await instance.post('/tripHistory', {
-            userId,
-        });
-        console.log(response.data);
+        const response = await instance.post('/tripHistory', 
+            {userId},
+        );
+        console.log(response.data.tripHistory);
         setTripHistory(response.data.tripHistory);
       } catch (error) {
         console.error("Error fetching trip history:", error);
       }
     };
     fetchTripHistory();
-  }, []);
+  },[userId])
   return (
     <div className="h-screen flex flex-col">
       <ButtonContainer>
@@ -66,14 +70,6 @@ function Profile() {
 
           {/* Contact Number */}
           <p className="text-gray-700 mb-2">Contact: {userDetails.email}</p>
-
-          {/* Overall Rating */}
-          {/* <p className="text-gray-700 mb-2">Rating: 4.5/5</p> */}
-
-          {/* Cab Type and Register Number */}
-          {/* <p className="text-gray-700">
-            Cab: {driverDetails.vehicle} (Reg. No: {driverDetails.registerNo})
-          </p> */}
         </div>
       )}
 
@@ -95,8 +91,7 @@ function Profile() {
                 <p className="text-gray-700 mb-2">Cab: {trip.service}</p>
                 <p className="text-gray-700 mb-2">Payment: {trip.payment}</p>
                 <p className="text-gray-700 mb-2">Fare: RS {trip.fare}</p>
-                {/* <p className="text-gray-700">Rating: {trip.rating}</p> */}
-                {/* <p className="text-gray-700">Description: {trip.description}</p> */}
+    
               </div>
             );
           })}

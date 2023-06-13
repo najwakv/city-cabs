@@ -11,6 +11,8 @@ import bcrypt from "bcrypt";
 import vehicleModel from "../model/vehicle.js";
 import driverModel from "../model/driver.js";
 import bookingModel from "../model/booking.js";
+import Razorpay from "razorpay";
+import crypto from "crypto";
 
 let user;
 
@@ -192,6 +194,7 @@ export const getDriverList = async (req, res) => {
 export const initializeRazorpay = async (req, res) => {
   try {
     const order = req.body.amount;
+    console.log(order, 'order');
     const instance = new Razorpay({
       key_id: process.env.RAZORPAY_ID,
       key_secret: process.env.KEY_SECRETE,
@@ -202,12 +205,14 @@ export const initializeRazorpay = async (req, res) => {
     };
     instance.orders.create(options, function (err, order) {
       if (err) {
+        console.log('error on error');
         console.error(err);
         return res.status(500).json({ message: "Internal Server Error" });
       }
       res.status(200).json({ order: order });
     });
   } catch (error) {
+    console.log('error on catch');
     console.error(error);
     res.status(500).json({ message: "internal server error" });
   }
@@ -273,7 +278,7 @@ export const getUserData = async (req, res) => {
 };
 
 export const tripHistory = async (req, res) => {
-  try {
+  try {console.log(req.body)
     const userId = req.body.userId;
     const tripHistory = await bookingModel.find({
       status: "completed",

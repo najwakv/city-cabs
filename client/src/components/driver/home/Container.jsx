@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from "react";
 import DriverHeader from "../DriverHeader";
 import DriverMap from "../DriverMap";
-import { useNavigate } from "react-router-dom";
 import driverInstance from "../../../instance/driverInstance";
 import tw from "tailwind-styled-components";
 import { toast } from "react-hot-toast";
 
 const Container = ({socket}) => {
-  const navigate = useNavigate();
   const [notifications, setNotifications] = useState([]);
-  const [response, setResponse] = useState(null);
   const [pickup, setPickup] = useState(null);
   const [dropoff, setDropoff] = useState(null);
   const [acceptClicked, setAcceptClicked] = useState(false);
@@ -32,22 +29,33 @@ const Container = ({socket}) => {
       });
   }, []);
 
+
   useEffect(() => {
-    // Listen for 'notification' event
-    socket.on("notification", (data) => {
-      console.log(data, "notification data");
-      const dataobject = data[0].drivers;
-      const driverCheck = dataobject.filter(
-        (item) => item.driverId == driverId
-      );
-      const statusVerification =
-        driverCheck.length > 0 && driverCheck[0].status === true;
-      statusVerification && setNotifications(data);
-    });
-    return () => {
-      socket.off("notification");
-    };
+    let intervalId = setInterval(() => {
+      socket.on("notification", (data) => {
+        const dataobject = data[0].drivers;
+        const driverCheck = dataobject.filter(
+          (item) => item.driverId == driverId
+          );
+          console.log(driverCheck, 'dataaaaaaaaaaaaaaaaaaa');
+        const statusVerification =
+          driverCheck.length > 0 && driverCheck[0].status === true;
+        statusVerification && setNotifications(data);
+      });
+      return () => {
+        socket.off("notification");
+      };
+    }, 3000);
+    return () => clearInterval(intervalId);
   }, [socket]);
+
+  // useEffect(() => {
+  
+  //   // Listen for 'notification' event
+   
+  // }, [socket])
+
+
 
   useEffect(() => {
     let timer;

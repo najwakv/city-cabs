@@ -180,6 +180,33 @@ const Confirm = ({ socket }) => {
     };
   }, [socket]);
 
+  useEffect(() => {
+    socket.on("verifyRideResponse", (data) => {
+      setDriverArriving("starting");
+      console.log(data);
+    });
+    return () => {
+      socket.off("verifyRideResponse");
+    };
+  }, [socket]);
+
+  useEffect(() => {
+    // Listen for 'notification' event
+    socket.on("proceedPayment", (data) => {
+      setDriverArriving("payment")
+      console.log(data)
+      setPaymentData(data);
+      setEndConfirmModal(true);
+    });
+    return () => {
+      socket.off("proceedPayment");
+    };
+  }, [socket]);
+
+  const payment = (paymentData) => {
+    navigate("/payment", { state: paymentData });
+  };
+
   return (
     <>
       <Wrapper>
