@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import socketIO from 'socket.io-client';
-// const socket = socketIO.connect('http://localhost:4000');
-const socket = socketIO.connect('https://city-cabs.onrender.com');
+const socket = socketIO.connect('http://localhost:4000');
+// const socket = socketIO.connect('https://city-cabs.onrender.com');
 import { useLocation, useNavigate } from "react-router-dom";
 import tw from "tailwind-styled-components";
 import { toast } from "react-hot-toast";

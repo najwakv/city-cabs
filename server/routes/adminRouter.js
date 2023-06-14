@@ -26,6 +26,7 @@ import {
   userData,
   weeklyChart,
 } from "../controllers/adminControllers.js";
+import { tokenMiddleware } from "../middleware/adminMiddleware.js";
 const router = express.Router();
 
 router.post("/login", login);
