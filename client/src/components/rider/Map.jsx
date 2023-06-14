@@ -4,8 +4,8 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import mapboxgl from "mapbox-gl";
 import socketIO from "socket.io-client";
 
-const socket = socketIO.connect("http://localhost:4000");
-// const socket = socketIO.connect("https://city-cabs.onrender.com");
+// const socket = socketIO.connect("http://localhost:4000");
+const socket = socketIO.connect("https://city-cabs.onrender.com");
 
 function Map(props) {
   mapboxgl.accessToken =
