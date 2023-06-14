@@ -22,6 +22,7 @@ const Confirm = ({ socket }) => {
   const [uniqueData, setUniqueData] = useState([]);
   const [cab, setCab] = useState(null);
   const [bookingData, setBookingData] = useState(null);
+  const [rating, setRating] = useState(null);
 
   const token = JSON.parse(localStorage.getItem("clientToken"));
 
@@ -177,18 +178,29 @@ const Confirm = ({ socket }) => {
   }, [socket]);
 
   useEffect(() => {
+    // Listen for 'driverArriving' event
+    socket.on("driverRating", (data) => {
+      setRating(data);
+    });
+
+    return () => {
+      socket.off("driverRating");
+    };
+  }, [socket]);
+
+  useEffect(() => {
     socket.on("verifyRideResponse", (data) => {
       setDriverArriving("starting");
     });
     return () => {
       socket.off("verifyRideResponse");
-    };  
+    };
   }, [socket]);
 
   useEffect(() => {
     // Listen for 'notification' event
     socket.on("proceedPayment", (data) => {
-      setDriverArriving("payment")
+      setDriverArriving("payment");
       setPaymentData(data);
       setEndConfirmModal(true);
     });
@@ -280,7 +292,11 @@ const Confirm = ({ socket }) => {
                           with your driver for the verification.Please dont
                           close the tab.
                         </div>
-                        <div className="uppercase tracking-wider px-2 py-1 rounded-md font-medium">
+
+                        <div className="uppercase tracking-wider px-2 py-1 rounded-md font-bold">
+                          driver Rating : {rating}
+                        </div>
+                        <div className="uppercase tracking-wider px-2 py-1 rounded-md font-semibold">
                           OTP : {otp}
                         </div>
                       </div>

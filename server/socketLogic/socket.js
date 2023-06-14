@@ -132,7 +132,6 @@ export default function initializeSocket(httpServer) {
         const notificationId = data.notificationId;
         const driverId = data.driverId;
         if (driverId) {
-          const rating = bookingModel.find({driverId: driverId, status: "completed"})
           const otpGenerator = () => {
             let otp = "";
             return new Promise((resolve, reject) => {
@@ -151,6 +150,25 @@ export default function initializeSocket(httpServer) {
                 { driverId: driverId, status: "booked", otp: otp },
                 { new: true }
               );
+              // Calculate rating
+              const ratings = await bookingModel
+                .find({ driverId: driverId, status: "completed" })
+                .select("rating");
+
+              let roundedAverageRating = 0;
+
+              if (ratings.length > 0) {
+                const totalRating = ratings.reduce((sum, rating) => {
+                  if (typeof rating.rating === "number") {
+                    return sum + rating.rating;
+                  } else {
+                    return sum;
+                  }
+                }, 0);
+
+                const averageRating = totalRating / ratings.length;
+                roundedAverageRating = Math.floor(averageRating);
+              }
               const liveLocation = await driverModel.findById(
                 { _id: driverId },
                 { latitude: 1, longitude: 1, _id: 0 }
@@ -158,8 +176,10 @@ export default function initializeSocket(httpServer) {
               const latitude = liveLocation.latitude;
               const longitude = liveLocation.longitude;
               const locationArray = [longitude, latitude];
+
               io.emit("liveLocationUpdate", locationArray);
-              io.emit("driverArriving", booking); // Emit the booking data
+              io.emit("driverArriving", booking);
+              io.emit("driverRating", roundedAverageRating);
             } catch (error) {
               console.error("Error updating:", error);
             }
@@ -200,7 +220,7 @@ export default function initializeSocket(httpServer) {
       io.emit("No Drivers");
     });
 
-    socket.on("verifyRide", async(data) => {
+    socket.on("verifyRide", async (data) => {
       try {
         const otp = data.otp;
         const notificationId = data.notificationId;
@@ -209,16 +229,17 @@ export default function initializeSocket(httpServer) {
           otp: otp,
         });
         if (verifyData) {
-          io.emit("verifyData", verifyData)
-          io.emit("verifyRideResponse", { message: "Ride verified successfully" });
+          io.emit("verifyData", verifyData);
+          io.emit("verifyRideResponse", {
+            message: "Ride verified successfully",
+          });
         } else {
           io.emit("notVerifyRideResponse", { message: "Invalid otp" });
         }
       } catch (error) {
-        console.error('error verifying ride')
-        
+        console.error("error verifying ride");
       }
-    })
+    });
 
     socket.on("handlePayment", async (data) => {
       const notificationId = data.verifyData.notificationId;
@@ -234,13 +255,15 @@ export default function initializeSocket(httpServer) {
 
     socket.on("confirmOfflinePayment", async (data) => {
       const id = data.notificationId;
-      await bookingModel.findOneAndUpdate({ _id: id }, { $set: { status: "completed", payment: "offline" } });
+      await bookingModel.findOneAndUpdate(
+        { _id: id },
+        { $set: { status: "completed", payment: "offline" } }
+      );
     });
 
-    socket.on("paymentSuccess",()=>{
-      io.emit("verifyPaymentSuccess")
-    })
-
+    socket.on("paymentSuccess", () => {
+      io.emit("verifyPaymentSuccess");
+    });
 
     socket.on("disconnect", () => {
       console.log("🔥: A user disconnected");
