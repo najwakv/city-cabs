@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-
-import UserOne from '../images/user/user-01.png';
+import { useNavigate } from 'react-router-dom';
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const navigate = useNavigate()
 
   const trigger = useRef(null);
   const dropdown = useRef(null);
@@ -35,6 +36,12 @@ const DropdownUser = () => {
     return () => document.removeEventListener('keydown', keyHandler);
   });
 
+  const logOut = (e) => {
+    e.preventDefault()
+    localStorage.removeItem('adminToken')
+    navigate('/')
+  }
+
   return (
     <div className="relative">
       <Link className="flex items-center gap-4" to="#">
@@ -44,7 +51,7 @@ const DropdownUser = () => {
           </span>
           <span className="block text-xs">CITY-CABS</span>
         </span>
-        <button>
+        <button onClick={logOut}>
           <svg
             className="fill-current"
             width="22"

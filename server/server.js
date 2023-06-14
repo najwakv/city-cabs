@@ -22,7 +22,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({ limit: "100mb" }));
 app.use(cookieParser());
 app.use(express.json());
-app.use(logger("dev"));
+// app.use(logger("dev"));
 
 app.use(express.urlencoded({ extended: true }));
 

@@ -3,6 +3,7 @@ import CardOne from '../../components/CardOne.jsx';
 import CardThree from '../../components/CardThree.jsx';
 import CardTwo from '../../components/CardTwo.jsx';
 import ChartOne from '../../components/ChartOne.jsx';
+import ChartThree from '../../components/ChartThree.jsx';
 import ChartTwo from '../../components/ChartTwo.jsx';
 import DefaultLayout from '../../layout/DefaultLayout.jsx';
 
@@ -19,6 +20,7 @@ const Dashboard = () => {
       <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
         <ChartOne />
         <ChartTwo />
+        <ChartThree/>
       </div>
     </DefaultLayout>
   );

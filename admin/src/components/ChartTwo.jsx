@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactApexChart from 'react-apexcharts';
+import adminInstance from '../instance/instance';
+import { toast } from 'react-hot-toast';
 
 const options = {
   colors: ['#3C50E0', '#80CAEE'],
@@ -66,10 +68,30 @@ const ChartTwo = () => {
     series: [
       {
         name: 'Earnings: RS',
-        data: [44, 55, 41, 67, 22, 43, 65],
+        data: [44, 55, 41, 67, 22, 100, 65],
       },
     ],
   });
+
+  useEffect(() => {
+    adminInstance
+      .get('/weeklyChart')
+      .then((response) => {
+        setState({
+          series: [
+            {
+              name: 'Earnings: RS',
+              data: response.data,
+            },
+          ],
+        });
+      })
+      .catch((error) => {
+        const { response, message } = error;
+        const errorMessage = response ? response.data.message : message;
+        toast.error(errorMessage);
+      });
+  }, []);
 
   return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white p-7.5 shadow-default dark:border-strokedark dark:bg-boxdark xl:col-span-4">
@@ -82,7 +104,7 @@ const ChartTwo = () => {
       </div>
 
       <div>
-        <div id="chartTwo" className="-ml-5 -mb-9">
+        <div id="chartTwo" className="-mb-9 -ml-5">
           <ReactApexChart
             options={options}
             series={state.series}

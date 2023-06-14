@@ -8,6 +8,7 @@ import requestModel from "../model/request.js";
 import { approveMail, declineMail } from "../helper/requestHelper.js";
 import vehicleModel from "../model/vehicle.js";
 import cloudinary from "../cloudinary/cloudinary.js";
+import bookingModel from "../model/booking.js";
 
 // ------------------------------------------------------------------LOGIN-----------------------------------------------------------------//
 
@@ -121,7 +122,6 @@ export const getRequests = async (req, res) => {
     res.status(200).json({ requests });
   } catch (error) {
     res.status(404).json({ message: "Unable to get Requests" });
-
   }
 };
 
@@ -340,5 +340,103 @@ export const userData = async (req, res, next) => {
     res.json({ userCount, driverCount });
   } catch (error) {
     res.status(404).json({ message: "Internal Server Error" });
+  }
+};
+
+export const salesData = async (req, res) => {
+  const period = req.body.day;
+  let startDate, endDate;
+  const today = new Date();
+
+  if (period === "day") {
+    startDate = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    );
+    endDate = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() + 1
+    );
+  } else if (period === "week") {
+    const firstDayOfWeek = today.getDate() - today.getDay(); // Assuming Sunday is the first day of the week
+    startDate = new Date(today.getFullYear(), today.getMonth(), firstDayOfWeek);
+    endDate = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      firstDayOfWeek + 7
+    );
+  } else if (period === "month") {
+    startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+    endDate = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+  } else if (period === "year") {
+    startDate = new Date(today.getFullYear(), 0, 1);
+    endDate = new Date(today.getFullYear() + 1, 0, 1);
+  } else {
+    return res.status(400).json({ message: "Invalid period" });
+  }
+
+  try {
+    const bookings = await bookingModel.find({
+      status: "completed",
+      createdAt: { $gte: startDate, $lt: endDate },
+    });
+    res.status(200).json(bookings);
+  } catch (error) {
+    res.status(404).json({ message: "Error retrieving sales data" });
+  }
+};
+
+export const weeklyChart = async (req, res) => {
+  try {
+    const weeklyData = [0, 0, 0, 0, 0, 0, 0];
+    const result = await bookingModel.find({ status: "completed" });
+    if (result) {
+      result.forEach((booking) => {
+        const createdAt = new Date(booking.createdAt);
+        const dayOfWeek = createdAt.getDay();
+        const fare = booking.fare;
+        weeklyData[dayOfWeek] += fare;
+      });
+      res.status(200).json(weeklyData);
+    } else {
+      res.status(404).json({ message: "unable to get weekly data" });
+    }
+  } catch (error) {
+    res.status(404).json({ message: "Error retrieving weekly data" });
+  }
+};
+
+export const cabChart = async (req, res) => {
+  try {
+    const cabData = {
+      cabName: [],
+      earnings: [],
+    };
+    const result = await vehicleModel.find({ block: false }, { service: 1 });
+    if (result) {
+      result.forEach((data) => cabData.cabName.push(data.service));
+      const bookings = await bookingModel.find({ status: "completed" });
+      if (bookings) {
+        cabData.cabName.forEach((cab) => {
+          const cabBookings = bookings.filter(
+            (booking) => booking.service === cab
+          );
+          const earnings = cabBookings.reduce(
+            (total, booking) => total + booking.fare,
+            0
+          );
+          cabData.earnings.push(earnings);
+        });
+        res.status(200).json(cabData);
+      } else {
+        res.status(404).json({ message: "Unable to calculate fare" });
+      }
+    } else {
+      res.status(404).json({ message: "Unable to get vehicle details" });
+    }
+  } catch (error) {
+    res.status(404).json({ message: "server error" });
   }
 };

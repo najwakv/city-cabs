@@ -4,6 +4,7 @@ import {
   approveRequest,
   blockDriver,
   blockUser,
+  cabChart,
   declineRequest,
   getActiveCabs,
   getActiveDrivers,
@@ -16,12 +17,14 @@ import {
   getVehicles,
   hideVehicle,
   login,
+  salesData,
   showVehicle,
   tokenVerify,
   unBlockDriver,
   unBlockUser,
   updateVehicleDetails,
   userData,
+  weeklyChart,
 } from "../controllers/adminControllers.js";
 const router = express.Router();
 
@@ -36,6 +39,7 @@ router.post("/hideVehicle", hideVehicle);
 router.post("/showVehicle", showVehicle);
 router.post("/addVehicle", addVehicle);
 router.post("/getVehicleData", getVehicleData);
+router.post('/salesData',salesData)
 
 router.get("/tokenVerify", tokenVerify);
 router.get("/getUsers", getUsers);
@@ -46,7 +50,9 @@ router.get("/getActiveUsers", getActiveUsers);
 router.get("/getActiveDrivers", getActiveDrivers);
 router.get("/getActiveCabs", getActiveCabs);
 router.get("/getActiveRequests", getActiveRequests);
-router.get("/userData", userData)
+router.get("/userData", userData);
+router.get("/weeklyChart", weeklyChart)
+router.get("/cabChart", cabChart)
 
 router.patch("/updateVehicleDetails", updateVehicleDetails)
 

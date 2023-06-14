@@ -5,10 +5,12 @@ import Driver from './pages/Driver';
 import Request from './pages/Request';
 import Vehicle from './pages/Vehicle';
 import LoginPage from './pages/LoginPage';
-import AdminPublicRoute from './utils/AdminPublicRoute';
-import AdminProtectedRoute from './utils/AdminProtectedRoute';
 import AddVehicle from './components/AddVehicle';
 import EditVehicle from './components/EditVehicle';
+import AdminPublicRoute from './utils/AdminPublicRoute';
+import AdminProtectedRoute from './utils/AdminProtectedRoute';
+import Sales from './pages/Sales';
+
 
 function App() {
   return (
@@ -28,7 +30,7 @@ function App() {
             <Route path="/admin/vehicle" element={<Vehicle />} />
             <Route path="/admin/vehicle/addVehicle" element={<AddVehicle/>} />
             <Route path="/admin/vehicle/editVehicle" element={<EditVehicle />} />
-            <Route path="/admin/salesReport" element={<Vehicle />} />
+            <Route path="/admin/salesReport" element={<Sales/>} />
           </Route>
         </Routes>
       </Router>

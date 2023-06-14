@@ -53,7 +53,7 @@ const Header = (props) => {
         <div className="flex items-end justify-end gap-3 2xsm:gap-7 w-full  ">
           <ul className="flex items-center gap-2 2xsm:gap-4">
             {/* <!-- Dark Mode Toggler --> */}
-            <DarkModeSwitcher />
+            {/* <DarkModeSwitcher /> */}
             {/* <!-- Dark Mode Toggler --> */}
           </ul>
           {/* <!-- User Area --> */}
