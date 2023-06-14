@@ -1,8 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import socketIO from 'socket.io-client';
-const socket = socketIO.connect('http://localhost:4000');
-// const socket = socketIO.connect('https://city-cabs.onrender.com');
+// const socket = socketIO.connect('http://localhost:4000');
+const socket = socketIO.connect('https://city-cabs.onrender.com');
 
 import Dashboard from "./pages/Dashboard";
 

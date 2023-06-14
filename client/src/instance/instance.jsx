@@ -3,8 +3,8 @@ import axios from 'axios';
 //-----------------Instance-----------------//
 
 export const instance = axios.create({
-    baseURL:"http://localhost:4000/api/user"
-    // baseURL:"https://city-cabs.onrender.com/api/user"
+    // baseURL:"http://localhost:4000/api/user"
+    baseURL:"https://city-cabs.onrender.com/api/user"
 })
 
 //-----------------Axios Interceptors-----------------//
