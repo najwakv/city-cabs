@@ -4,11 +4,10 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import mapboxgl from "mapbox-gl";
 import socketIO from "socket.io-client";
 
-// const socket = socketIO.connect("http://localhost:4000");
-const socket = socketIO.connect("https://city-cabs.onrender.com");
+const socket = socketIO.connect("http://localhost:4000");
+// const socket = socketIO.connect("https://city-cabs.onrender.com");
 
 function Map(props) {
-  console.log(props)
   mapboxgl.accessToken =
     "pk.eyJ1IjoibmFqd2EyMDAxIiwiYSI6ImNsaGZ2d3c4dDFhc3YzbW52OXYwc3dpbDMifQ.h-g-GFjscHLCdp9IvtwQMQ";
 
@@ -45,7 +44,6 @@ function Map(props) {
 
   //Marker
   const addToMap = (map, coordinates) => {
-    //console.log(coordinates);
     const marker1 = new mapboxgl.Marker().setLngLat(coordinates).addTo(map);
   };
 

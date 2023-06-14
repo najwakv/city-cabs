@@ -17,7 +17,6 @@ const DriverSignup = () => {
       driverInstance
         .get("/getVehicleData")
         .then((response) => {
-          console.log(response);
           setVehicle(response.data.vehicles);
         })
         .catch((error) => {
@@ -53,7 +52,6 @@ const DriverSignup = () => {
     validateOnChange: false,
 
     onSubmit: async (value) => {
-      console.log(value)
       const licenseImage = license;
       if (!licenseImage) {
         toast.error("Please add your License");

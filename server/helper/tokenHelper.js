@@ -9,6 +9,6 @@ export const generateToken = async(data) => {
             resolve(token)
         })
     } catch (err) {
-        console.log(err)
+        console.error(err)
     }
 }

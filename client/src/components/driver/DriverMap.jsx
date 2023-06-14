@@ -3,10 +3,10 @@ import MapGL, { GeolocateControl, Marker, Popup } from "react-map-gl";
 import tw from "tailwind-styled-components";
 import { toast } from "react-hot-toast";
 import socketIO from "socket.io-client";
-// const socket = socketIO.connect("http://localhost:4000");
-const socket = socketIO.connect("https://city-cabs.onrender.com");
+const socket = socketIO.connect("http://localhost:4000");
+// const socket = socketIO.connect("https://city-cabs.onrender.com");
 
-const DriverMap = ({ pickup, dropoff, notificationId }) => {
+const DriverMap = ({ pickup, dropoff, notificationId, setAcceptClicked }) => {
   const [pickupCoordinates, setPickupCoordinates] = useState([0, 0]);
   const [dropoffCoordinates, setDropoffCoordinates] = useState([0, 0]);
   const [coordinates, setCoordinates] = useState(false);
@@ -44,7 +44,6 @@ const DriverMap = ({ pickup, dropoff, notificationId }) => {
           latitude: viewPort.latitude,
           longitude: viewPort.longitude,
         };
-        console.log(liveLocation)
         socket.emit(
           "liveLocation",
           { liveLocation, token: driverToken },
@@ -73,27 +72,23 @@ const DriverMap = ({ pickup, dropoff, notificationId }) => {
     if (pickup) {
       setCoordinates(true);
       getPickupCoordinates(pickup);
-      setStatus(true)
+      setStatus(true);
     } else {
       setCoordinates(false);
       setPickupCoordinates([0, 0]);
-      setStatus(false)
+      setStatus(false);
     }
 
     if (dropoff) {
       setCoordinates(true);
       getDropoffCoordinates(dropoff);
-      setStatus(true)
+      setStatus(true);
     } else {
       setCoordinates(false);
       setDropoffCoordinates([0, 0]);
-      setStatus(false)
+      setStatus(false);
     }
   }, [pickup, dropoff]);
-
-  useEffect(()=> {
-    console.log(status,'handlingaccept')
-  },[status])
 
   //get pickup coordinate
   const getPickupCoordinates = (pickup) => {
@@ -116,7 +111,7 @@ const DriverMap = ({ pickup, dropoff, notificationId }) => {
         setPickupCoordinates(data.features[0].center);
       })
       .catch((error) => {
-        //console.log(error);
+        console.error(error);
       });
   };
 
@@ -140,9 +135,7 @@ const DriverMap = ({ pickup, dropoff, notificationId }) => {
       .then((data) => {
         setDropoffCoordinates(data.features[0].center);
       })
-      .catch((error) => {
-        //console.log(error);
-      });
+      .catch((error) => {});
   };
   const handleModal = (e) => {
     setForm(true);
@@ -164,7 +157,6 @@ const DriverMap = ({ pickup, dropoff, notificationId }) => {
 
   useEffect(() => {
     socket.on("verifyRideResponse", (data) => {
-      console.log(data.message);
       setForm(false);
       setStatus(false);
     });
@@ -175,8 +167,7 @@ const DriverMap = ({ pickup, dropoff, notificationId }) => {
 
   useEffect(() => {
     socket.on("notVerifyRideResponse", (data) => {
-      console.log(data.message);
-      setStatus(null)
+      setStatus(null);
     });
     return () => {
       socket.off("notVerifyRideResponse");
@@ -185,15 +176,20 @@ const DriverMap = ({ pickup, dropoff, notificationId }) => {
 
   const handlePayment = (e) => {
     e.preventDefault();
-    console.log('end ')
     socket.emit("handlePayment", { verifyData });
   };
 
   useEffect(() => {
-    // Listen for 'notification' event
-    socket.on("proceedOfflinePayment", (data) => {
+    socket.on("proceedOfflinePayment", async (data) => {
+      const dataobject = data[0].drivers;
+      const driverIds = localStorage.getItem("driverId");
+      const driverCheck = await dataobject.filter(
+        (item) => item.driverId == driverIds
+      );
+      const statusVerification =
+        driverCheck.length > 0 && driverCheck[0].status === true;
+      statusVerification && setPaymentStatus(true);
       setPaymentData(data);
-      setPaymentStatus(true);
     });
     return () => {
       socket.off("proceedOfflinePayment");
@@ -202,21 +198,19 @@ const DriverMap = ({ pickup, dropoff, notificationId }) => {
 
   const fare = paymentData?.[0]?.fare;
 
-  console.log(fare,'this is fare')
-
   const closePaymentModal = () => {
     setStatus(null);
     setPaymentStatus(false);
-    setCoordinates(false)
+    setCoordinates(false);
+    setAcceptClicked(false);
     socket.emit("confirmOfflinePayment", verifyData);
   };
-
-  console.log(status);
 
   useEffect(() => {
     socket.on("verifyPaymentSuccess", () => {
       setStatus(null);
-      setCoordinates(false)
+      setCoordinates(false);
+      setAcceptClicked(false);
     });
     return () => {
       socket.off("verifyPaymentSuccess");

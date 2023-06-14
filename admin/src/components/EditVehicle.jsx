@@ -77,7 +77,6 @@ const EditVehicle = () => {
               toast.success(response.data.message);
             })
             .catch((error) => {
-              console.log(error);
               toast.dismiss();
               const { response, message } = error;
               const errorMessage = response ? response.data.message : message;

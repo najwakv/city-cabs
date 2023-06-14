@@ -13,11 +13,9 @@ const Rating = () => {
 
   const navigate = useNavigate();
   const notificationId = localStorage.getItem("notificationId")
-  console.log(notificationId,'this is id to be updated')
 
   const handleRatingChange = (event) => {
     setRating(parseInt(event.target.value));
-    console.log(event.target.value);
   };
 
   const handleDescriptionChange = (event) => {

@@ -50,7 +50,7 @@ export const getUsers = async (req, res) => {
     const users = await userModel.find();
     res.status(200).json({ users });
   } catch (error) {
-    console.log(error);
+    res.status(404).json({ error });
   }
 };
 
@@ -85,7 +85,7 @@ export const getDrivers = async (req, res) => {
     const drivers = await driverModel.find();
     res.status(200).json({ drivers });
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -120,7 +120,8 @@ export const getRequests = async (req, res) => {
     const requests = await requestModel.find();
     res.status(200).json({ requests });
   } catch (error) {
-    console.log(error);
+    res.status(404).json({ message: "Unable to get Requests" });
+
   }
 };
 
@@ -245,7 +246,6 @@ export const addVehicle = async (req, res) => {
 
 export const getVehicleData = async (req, res) => {
   try {
-    console.log(req.body);
     const vehicleId = req.body.vehicleId;
     const vehicle = await vehicleModel.findOne({ _id: vehicleId });
     res.status(200).json({ vehicle });
@@ -261,13 +261,15 @@ export const updateVehicleDetails = async (req, res) => {
     const { imageData, vehicleId, details } = req.body;
     const { secure_url: image } = await cloudinary.uploader.upload(imageData);
     const nonEmptyFields = Object.fromEntries(
-      Object.entries(details).filter(([_, value]) => value !== '')
+      Object.entries(details).filter(([_, value]) => value !== "")
     );
-    await vehicleModel.updateOne({ _id: vehicleId }, { image, ...nonEmptyFields });
-    res.status(200).json({ message: 'updated successfully' });
+    await vehicleModel.updateOne(
+      { _id: vehicleId },
+      { image, ...nonEmptyFields }
+    );
+    res.status(200).json({ message: "updated successfully" });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: 'Error updating vehicle details' });
+    res.status(500).json({ message: "Error updating vehicle details" });
   }
 };
 
@@ -315,11 +317,19 @@ export const getActiveRequests = async (req, res) => {
   }
 };
 
-export const userData = async(req, res, next) => {
+export const userData = async (req, res, next) => {
   try {
     const month = req.query.month;
     const startDate = new Date(`${month} 1, 2023`);
-    const endDate = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0, 23, 59, 59, 999);
+    const endDate = new Date(
+      startDate.getFullYear(),
+      startDate.getMonth() + 1,
+      0,
+      23,
+      59,
+      59,
+      999
+    );
     const userCount = await userModel.countDocuments({
       createdAt: { $gte: startDate, $lte: endDate },
     });
@@ -329,7 +339,6 @@ export const userData = async(req, res, next) => {
 
     res.json({ userCount, driverCount });
   } catch (error) {
-    console.log(error);
-    res.status(404).json({ message: 'Internal Server Error' });
+    res.status(404).json({ message: "Internal Server Error" });
   }
-}
+};

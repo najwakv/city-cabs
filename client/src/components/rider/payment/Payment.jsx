@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import socketIO from 'socket.io-client';
-// const socket = socketIO.connect('http://localhost:4000');
-const socket = socketIO.connect('https://city-cabs.onrender.com');
+const socket = socketIO.connect('http://localhost:4000');
+// const socket = socketIO.connect('https://city-cabs.onrender.com');
 import { useLocation, useNavigate } from "react-router-dom";
 import tw from "tailwind-styled-components";
 import { toast } from "react-hot-toast";
@@ -26,7 +26,6 @@ const Payment = () => {
           setMethod("online");
         })
         .catch((error) => {
-          console.log(error);
           toast.dismiss();
           toast.error(error?.response?.data?.message);
         });
@@ -52,7 +51,6 @@ const Payment = () => {
           .then((response) => {
             toast.success(response.data.message);
             socket.emit("paymentSuccess")
-            // console.log("payment successfully compoletererereree");
             setMethod("success");
             navigate("/rating");
           })

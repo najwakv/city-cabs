@@ -25,7 +25,7 @@ const RideSelector = ({
         const response = await getVehicleList();
         setCarList(response.data.carList);
       } catch (error) {
-        console.log("error", error);
+        toast.error("Error getting vehicle list")
       }
     };
     vehicleData();
@@ -39,13 +39,11 @@ const RideSelector = ({
     )
       .then((res) => res.json())
       .then((data) => {
-        console.log(data,'this is rideselector')
         toast.loading("Calculating distance");
         if (data && data.routes && data.routes[0] && data.routes[0].duration) {
           const durationInMinutes = parseInt(data.routes[0].duration / 60);
           const hours = Math.floor(durationInMinutes / 60);
           const minutes = durationInMinutes % 60;
-          console.log(data.routes[0],'this pick up and drop off');
           setRideDuration({ hours, minutes });
           setRideDistance(Math.floor(data.routes[0].distance / 1000));
           toast.dismiss();

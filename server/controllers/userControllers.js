@@ -55,7 +55,6 @@ export const tokenVerify = async (req, res) => {
       res.status(404).json({ message: "userBlocked" });
     }
   } catch (error) {
-    console.log(error);
     res.status(404).json({ error });
   }
 };
@@ -113,7 +112,6 @@ export const resendOtp = async (req, res) => {
 
 export const forgotPasswordOtp = async (req, res) => {
   user = req.body.value;
-  console.log(user.email);
   const emailVerfied = await userModel.findOne({ email: user.email });
   if (emailVerfied) {
     sendOtp(user.email)
@@ -178,7 +176,6 @@ export const getDriverList = async (req, res) => {
       { block: false },
       { _id: 1, latitude: 1, longitude: 1, vehicle: 1 }
     );
-    console.log(drivers)
     const driverList = drivers.map((driver) => [
       driver._id.toString(),
       driver.longitude,
@@ -194,7 +191,6 @@ export const getDriverList = async (req, res) => {
 export const initializeRazorpay = async (req, res) => {
   try {
     const order = req.body.amount;
-    console.log(order, 'order');
     const instance = new Razorpay({
       key_id: process.env.RAZORPAY_ID,
       key_secret: process.env.KEY_SECRETE,
@@ -205,14 +201,12 @@ export const initializeRazorpay = async (req, res) => {
     };
     instance.orders.create(options, function (err, order) {
       if (err) {
-        console.log('error on error');
         console.error(err);
         return res.status(500).json({ message: "Internal Server Error" });
       }
       res.status(200).json({ order: order });
     });
   } catch (error) {
-    console.log('error on catch');
     console.error(error);
     res.status(500).json({ message: "internal server error" });
   }
@@ -248,15 +242,12 @@ export const rating = async (req, res) => {
   const { rating, description, notificationId } = req.body;
 
   try {
-    console.log(rating, typeof rating, description, typeof description);
     const updatedBooking = await bookingModel.findByIdAndUpdate(
       { _id: notificationId }, // Use the notificationId to find the specific booking
       { $set: { rating: rating, description: description } } // Set the rating and description fields
     );
-    console.log(updatedBooking, "this is updated data");
     res.status(200).json(updatedBooking);
   } catch (error) {
-    console.log(error);
     res.status(500).json({ error: "Failed to update rating and description" });
   }
 };
@@ -266,7 +257,7 @@ export const getUserData = async (req, res) => {
   if (token) {
     jwt.verify(token, process.env.TOKEN_SECRET, async (error, result) => {
       if (error) {
-        console.log(error);
+        console.error(error);
       }
       if (result) {
         const userId = result.userId;
@@ -278,7 +269,7 @@ export const getUserData = async (req, res) => {
 };
 
 export const tripHistory = async (req, res) => {
-  try {console.log(req.body)
+  try {
     const userId = req.body.userId;
     const tripHistory = await bookingModel.find({
       status: "completed",

@@ -13,7 +13,6 @@ import bcrypt from "bcrypt";
 import vehicleModel from "../model/vehicle.js";
 import bookingModel from "../model/booking.js";
 
-
 // ----------------------------------------------------------------Login-------------------------------------------------------------------//
 
 export const login = async (req, res) => {
@@ -34,7 +33,6 @@ export const login = async (req, res) => {
       const driverData = await doLogin({ email, password }, driverDatabase);
       if (driverData) {
         const token = await generateToken(driverData);
-        console.log(driverData);
         return res.status(200).json({ token, message: "Login successful!" });
       }
       return res.status(404).json({ message: "Incorrect password" });
@@ -64,7 +62,6 @@ export const tokenVerify = async (req, res) => {
     jwt.verify(token, process.env.TOKEN_SECRET);
     res.status(200).json({ message: "JWT Verified" });
   } catch (error) {
-    console.log(error);
     res.status(404).json({ error });
   }
 };
@@ -101,8 +98,7 @@ export const otpVerify = async (req, res) => {
   if (driverOTP === OTP) {
     await cloudinary.uploader.upload(license).then((result, err) => {
       if (err) {
-        console.log("error uploading");
-        console.log(err);
+        console.error(err);
         res
           .status(404)
           .json({ message: "An error occured on uploading license" });
@@ -126,7 +122,6 @@ export const otpVerify = async (req, res) => {
 
 export const forgotPasswordOtp = async (req, res) => {
   driver = req.body.value;
-  console.log(driver.email);
   const emailVerfied = await driverModel.findOne({ email: driver.email });
   if (emailVerfied) {
     sendOtp(driver.email)
@@ -208,7 +203,7 @@ export const getDriverId = async (req, res) => {
   if (token) {
     jwt.verify(token, process.env.TOKEN_SECRET, async (error, result) => {
       if (error) {
-        console.log(error);
+        console.error(error);
       }
       if (result) {
         const driverId = result.driverId;
@@ -223,7 +218,7 @@ export const getDriverDetails = async (req, res) => {
   if (token) {
     jwt.verify(token, process.env.TOKEN_SECRET, async (error, result) => {
       if (error) {
-        console.log(error);
+        console.error(error);
       }
       if (result) {
         const driverId = result.driverId;
@@ -247,3 +242,49 @@ export const tripHistory = async (req, res) => {
     res.status(500).json({ message: "internal server error" });
   }
 };
+
+export const getRideDetails = async (req, res) => {
+  const driverId = req.body.driverId;
+  const currentDate = new Date();
+  // Start of the current day
+  const startOfDay = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth(),
+    currentDate.getDate()
+  );
+  // End of the current day
+  const endOfDay = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth(),
+    currentDate.getDate(),
+    23,
+    59,
+    59
+  );
+  try {
+    const rideCountAndFare = await bookingModel.aggregate([
+      {
+        $match: {
+          status: "completed",
+          driverId: driverId,
+          createdAt: {
+            $gte: startOfDay,
+            $lte: endOfDay,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          count: { $sum: 1 },
+          totalFare: { $sum: "$fare" },
+        },
+      },
+    ]);
+    const result = rideCountAndFare[0] || { count: 0, totalFare: 0 };
+    res.status(200).json({result});
+  } catch (error) {
+    res.status(404).json({ message: "Error occurred while retrieving ride details." });
+  }
+};
+

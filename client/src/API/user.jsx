@@ -5,7 +5,6 @@ import instance from "../instance/instance";
 
 export const userRegisterOtp = async (value) => {
   try {
-    console.log(value);
     const response = await instance.post("/otp", { value });
     return response;
   } catch (error) {

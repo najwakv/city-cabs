@@ -13,7 +13,6 @@ const DriverTable = () => {
       .get('/getDrivers')
       .then((response) => {
         setDriver(response.data.drivers);
-        console.log(response.data.drivers);
       })
       .catch((error) => {
         const { response, message } = error;

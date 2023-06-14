@@ -1,5 +1,5 @@
 import express from "express";
-import { forgotPasswordOtp, forgotPasswordOtpVerify, getDriverDetails, getDriverId, getVehicleData, login, otp, otpVerify, resendOtp, resetPassword, tokenVerify, tripHistory } from "../controllers/driverControllers.js";
+import { forgotPasswordOtp, forgotPasswordOtpVerify, getDriverDetails, getDriverId, getRideDetails, getVehicleData, login, otp, otpVerify, resendOtp, resetPassword, tokenVerify, tripHistory } from "../controllers/driverControllers.js";
 const router = express.Router();
 
 router.post('/login', login);
@@ -11,6 +11,7 @@ router.post('/resetPassword', resetPassword)
 router.post('/getDriverId', getDriverId)
 router.post('/getDriverDetails',getDriverDetails)
 router.post('/tripHistory',tripHistory)
+router.post('/getRideDetails', getRideDetails)
 
 
 router.get('/verifyToken', tokenVerify);

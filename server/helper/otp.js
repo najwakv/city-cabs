@@ -31,7 +31,6 @@ export const sendOtp = (mail) => {
       await transporter.sendMail(mailOptions);
       resolve(OTP);
     } catch (error) {
-      console.log(error);
       resolve(error);
     }
   });

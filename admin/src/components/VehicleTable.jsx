@@ -15,7 +15,6 @@ const VehicleTable = () => {
       .get('/getVehicles')
       .then((response) => {
         setVehicle(response.data.vehicles);
-        console.log(response);
       })
       .catch((error) => {
         const { response, message } = error;

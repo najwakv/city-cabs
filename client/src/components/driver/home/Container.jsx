@@ -4,8 +4,9 @@ import DriverMap from "../DriverMap";
 import driverInstance from "../../../instance/driverInstance";
 import tw from "tailwind-styled-components";
 import { toast } from "react-hot-toast";
+import RideCount from "./RideCount";
 
-const Container = ({socket}) => {
+const Container = ({ socket }) => {
   const [notifications, setNotifications] = useState([]);
   const [pickup, setPickup] = useState(null);
   const [dropoff, setDropoff] = useState(null);
@@ -21,8 +22,6 @@ const Container = ({socket}) => {
       .then((response) => {
         setDriverId(response.data.driverId);
         localStorage.setItem("driverId", response.data.driverId);
-        console.log(response.data)
-        console.log(response.data.driverId);
       })
       .catch((error) => {
         const { response, message } = error;
@@ -31,24 +30,16 @@ const Container = ({socket}) => {
       });
   }, []);
 
-
   useEffect(() => {
     let intervalId = setInterval(() => {
       socket.on("notification", async (data) => {
         const dataobject = data[0].drivers;
-        const driverIds = localStorage.getItem("driverId")
+        const driverIds = localStorage.getItem("driverId");
         const driverCheck = await dataobject.filter(
           (item) => item.driverId == driverIds
-          );
-        console.log(driverIds, 'driverId');
-        console.log(dataobject, 'dataObject');
-          // for(let i=0;i<dataobject.length;i++) {
-          //   if(dataobject[i].driverId == driverIds) {
-          //     console.log('yes');
-          //   }
-          // }
-          console.log(driverCheck, 'dataaaaaaaaaaaaaaaaaaa');
-        const statusVerification = driverCheck.length > 0 && driverCheck[0].status === true;
+        );
+        const statusVerification =
+          driverCheck.length > 0 && driverCheck[0].status === true;
         statusVerification && setNotifications(data);
       });
       return () => {
@@ -57,13 +48,6 @@ const Container = ({socket}) => {
     }, 3000);
     return () => clearInterval(intervalId);
   }, [socket]);
-
-  // useEffect(() => {
-  
-  //   // Listen for 'notification' event
-   
-  // }, [socket])
-
 
 
   useEffect(() => {
@@ -160,9 +144,13 @@ const Container = ({socket}) => {
               pickup={pickup}
               dropoff={dropoff}
               notificationId={notificationId}
+              setAcceptClicked={setAcceptClicked}
             />
           ) : (
-            <DriverMap />
+            <>
+              <DriverMap />
+              <RideCount />
+            </>
           )}
         </Wrapper>
       </div>
@@ -219,3 +207,26 @@ group relative w-full flex justify-center py-2 px-4 border border-transparent te
 const DeclineButton = tw.div`
 group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-black bg-zinc-100 hover:bg-zinc-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mt-2
 `;
+
+// import React from 'react'
+// import RideCount from "./RideCount";
+
+// const Container = () => {
+//   return (
+//     <>
+//     <DriverHeader />
+//     <div className="overflow-hidden h-screen">
+//       <Wrapper>
+//         <DriverMap/>
+//         <RideCount/>
+//       </Wrapper>
+//     </div>
+//     </>
+//   )
+// }
+
+// export default Container
+
+// const Wrapper = tw.div`
+//   flex flex-col items-center overflow-hidden justify-center md:flex-row min-h-screen w-full
+// `;

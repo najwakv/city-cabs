@@ -17,7 +17,6 @@ function DriverProfileContent() {
     .then((response) => {
       setDriverDetails(response.data.driverDetails);
       setDriverId(response.data.driverDetails._id);
-      console.log(response.data.driverDetails);
     })
     .catch((error) => {
       const { response, message } = error;
@@ -33,7 +32,6 @@ function DriverProfileContent() {
         const response = await driverInstance.post("/tripHistory", {
           driverId,
         });
-        // console.log(response.data);
         setTripHistory(response.data.tripHistory);
       } catch (error) {
         console.error("Error fetching trip history:", error);

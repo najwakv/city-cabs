@@ -18,11 +18,10 @@ export default function initializeSocket(httpServer) {
   });
 
   io.on("connection", (socket) => {
-    console.log(`⚡: ${socket.id} user just connected!`);
+    // console.log(`⚡: ${socket.id} user just connected!`);
 
     // Event handler for the "liveLocation" event
     socket.on("liveLocation", async (data) => {
-      // console.log("Received live location:", data);
       const location = data.liveLocation;
       const token = data.token;
       try {
@@ -55,23 +54,18 @@ export default function initializeSocket(httpServer) {
     });
 
     socket.on("rideConfirmation", (data) => {
-      console.log("Ride confirmation received:", data);
       const uniqueData = data.uniqueData;
       if (uniqueData && uniqueData.length > 0) {
-        console.log("driver available");
         try {
           const parentCar = data.parentSelectedCar;
           const rideDistance = data.rideDistance;
           let price;
           if (rideDistance <= 3) {
-            // console.log("rideDistance");
             price = parentCar.minCharge;
           } else {
-            // console.log("not less than 3");
             price = (rideDistance - 3) * parentCar.price + parentCar.minCharge;
           }
           const token = data.token;
-          // console.log(token)
           try {
             if (token) {
               jwt.verify(
@@ -79,7 +73,7 @@ export default function initializeSocket(httpServer) {
                 process.env.TOKEN_SECRET,
                 async (error, result) => {
                   if (error) {
-                    console.log(error);
+                    console.error(error);
                   }
                   if (result) {
                     const userId = result.userId;
@@ -93,9 +87,7 @@ export default function initializeSocket(httpServer) {
                     });
 
                     await newRequest.save().then(async (savedRequest) => {
-                      console.log(savedRequest);
                       const requestId = savedRequest._id;
-                      console.log("Request ID:", requestId);
                       const insert = await bookingModel.findOne({
                         _id: requestId,
                       });
@@ -111,7 +103,6 @@ export default function initializeSocket(httpServer) {
                           const filteredNotifications = notifications.filter(
                             (notification) => notification.status === "pending"
                           );
-                          console.log(filteredNotifications);
                           io.emit("notification", filteredNotifications);
                         } catch (error) {
                           console.error("Error fetching notifications:", error);
@@ -125,35 +116,34 @@ export default function initializeSocket(httpServer) {
                 }
               );
             }
-          } catch (error) {}
-          console.log(token);
+          } catch (error) {
+            console.error(error);
+          }
         } catch (error) {
-          console.log(error);
+          console.error(error);
         }
       } else {
-        console.log("driver not available");
         io.emit("No Drivers");
       }
     });
 
     socket.on("acceptRequest", async (data) => {
-      //console.log("Accept request received:", data);
       try {
         const notificationId = data.notificationId;
         const driverId = data.driverId;
         if (driverId) {
+          const rating = bookingModel.find({driverId: driverId, status: "completed"})
           const otpGenerator = () => {
             let otp = "";
             return new Promise((resolve, reject) => {
               for (let i = 0; i < 6; i++) {
                 otp += Math.floor(Math.random() * 10);
               }
-              //   //console.log(otp,typeof otp);
               resolve(otp);
             });
           };
           otpGenerator().then(async (otp) => {
-            console.log("Generated OTP:", otp);
+            // console.log("Generated OTP:", otp);
             try {
               // Update bookingModel
               const booking = await bookingModel.findOneAndUpdate(
@@ -211,7 +201,6 @@ export default function initializeSocket(httpServer) {
     });
 
     socket.on("verifyRide", async(data) => {
-      console.log(data)
       try {
         const otp = data.otp;
         const notificationId = data.notificationId;
@@ -226,13 +215,12 @@ export default function initializeSocket(httpServer) {
           io.emit("notVerifyRideResponse", { message: "Invalid otp" });
         }
       } catch (error) {
-        console.log('error verifying ride')
+        console.error('error verifying ride')
         
       }
     })
 
     socket.on("handlePayment", async (data) => {
-      // //console.log("this is socket data",data.verifyData.notificationId)
       const notificationId = data.verifyData.notificationId;
       const request = await bookingModel.find({ _id: notificationId });
       io.emit("proceedPayment", request);
@@ -241,7 +229,6 @@ export default function initializeSocket(httpServer) {
     socket.on("offlinePayment", async (data) => {
       const notificationId = data.notificationId;
       const request = await bookingModel.find({ _id: notificationId });
-      //  //console.log(request)
       io.emit("proceedOfflinePayment", request);
     });
 

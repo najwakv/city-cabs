@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import tw from "tailwind-styled-components";
 import { useNavigate } from "react-router-dom";
 import instance from "../../instance/instance";
+import { toast } from "react-hot-toast";
 
 function Profile() {
   const [userDetails, setUserDetails] = useState(null);
@@ -22,9 +23,8 @@ function Profile() {
         });
         setUserDetails(response.data.userDetails);
         setUserId(response.data.userDetails._id);
-        console.log(response.data.userDetails._id)
       } catch (error) {
-        console.log(error);
+        toast.error(error.message)
       }
     };
     fetchUserData();
@@ -39,7 +39,6 @@ function Profile() {
         const response = await instance.post('/tripHistory', 
             {userId},
         );
-        console.log(response.data.tripHistory);
         setTripHistory(response.data.tripHistory);
       } catch (error) {
         console.error("Error fetching trip history:", error);

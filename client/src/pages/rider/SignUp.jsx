@@ -21,7 +21,6 @@ function SignUp() {
     validateOnChange: false,
 
     onSubmit: async (value) => {
-        console.log(value)
       const response = await userRegisterOtp(value);
       toast.success(response.data.message);
       navigate("/otp");

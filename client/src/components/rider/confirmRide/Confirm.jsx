@@ -76,7 +76,6 @@ const Confirm = ({ socket }) => {
     try {
       const response = await instance.get("/getDriverList");
       setDriverData(response.data.driverList);
-      console.log(response.data.driverList);
     } catch (error) {
       console.error("Error fetching driver details:", error);
     }
@@ -87,7 +86,6 @@ const Confirm = ({ socket }) => {
       // Calculate distance between pickupCoordinates and driverData
       const uniqueData = [];
       driverData.forEach((driver) => {
-        console.log(driver);
         const driverId = driver[0];
         const driverLongitude = driver[1];
         const driverLatitude = driver[2];
@@ -103,7 +101,6 @@ const Confirm = ({ socket }) => {
                   toast.error("NoSegment");
                 } else {
                   const distance = data.routes[0].distance;
-                  console.log(data.routes[0]);
                   if (distance < 70000) {
                     const driverData = { driverId, distance, driverCabType };
                     uniqueData.push(driverData);
@@ -117,7 +114,7 @@ const Confirm = ({ socket }) => {
             toast.error("Route not found");
           }
         } else {
-          console.log("Invalid cab type");
+          console.error("Invalid cab type");
         }
       });
       // Update state with unique driver data
@@ -160,7 +157,6 @@ const Confirm = ({ socket }) => {
   useEffect(() => {
     socket.on("No Drivers", () => {
       setDriverArriving("No drivers");
-      console.log("no drivers available");
     });
     return () => {
       socket.off("No Drivers");
@@ -183,18 +179,16 @@ const Confirm = ({ socket }) => {
   useEffect(() => {
     socket.on("verifyRideResponse", (data) => {
       setDriverArriving("starting");
-      console.log(data);
     });
     return () => {
       socket.off("verifyRideResponse");
-    };
+    };  
   }, [socket]);
 
   useEffect(() => {
     // Listen for 'notification' event
     socket.on("proceedPayment", (data) => {
       setDriverArriving("payment")
-      console.log(data)
       setPaymentData(data);
       setEndConfirmModal(true);
     });
