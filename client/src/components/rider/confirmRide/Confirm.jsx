@@ -99,7 +99,7 @@ const Confirm = ({ socket }) => {
               .then((res) => res.json())
               .then((data) => {
                 if (data.code === "NoSegment") {
-                  toast.error("NoSegment");
+                  console.log('No segnent')
                 } else {
                   const distance = data.routes[0].distance;
                   if (distance < 70000) {
@@ -109,10 +109,10 @@ const Confirm = ({ socket }) => {
                 }
               })
               .catch((error) => {
-                toast.error("Error fetching route data");
+                console.log('error fetching route data')
               });
           } else {
-            toast.error("Route not found");
+            console.log('route not found')
           }
         } else {
           console.error("Invalid cab type");

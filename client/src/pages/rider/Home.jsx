@@ -29,7 +29,7 @@ const Wrapper = tw.div`
 flex flex-col md:flex-row min-h-screen w-full bg-blue-200 
 `;
 const ActionBox = tw.div`
-  absolute  bottom-0 left-0 w-full z-10 px-3 pb-8 bg-gradient-to-t from-gray-200 cursor-pointer
+  absolute  bottom-0 left-0 w-full z-10 px-3 pb-8 bg-gradient-to-t from-gray-200
 `;
 const GradientBox = tw.div`
   p-px rounded-lg bg-gradient-to-b from-gray-300 via-gray-300

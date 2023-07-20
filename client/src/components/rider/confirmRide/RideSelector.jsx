@@ -39,7 +39,6 @@ const RideSelector = ({
     )
       .then((res) => res.json())
       .then((data) => {
-        toast.loading("Calculating distance");
         if (data && data.routes && data.routes[0] && data.routes[0].duration) {
           const durationInMinutes = parseInt(data.routes[0].duration / 60);
           const hours = Math.floor(durationInMinutes / 60);

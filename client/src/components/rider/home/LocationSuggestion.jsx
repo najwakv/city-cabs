@@ -16,7 +16,7 @@ const LocationSuggestion = () => {
 export default LocationSuggestion;
 
 const Wrapper = tw.div`
-    flex items-center w-full px-5 py-3 rounded-lg bg-gray-100 hover:bg-gray-300
+    flex items-center w-full px-5 py-3 rounded-lg bg-gray-100 hover:bg-gray-300 cursor-pointer
 `
 
 const Icon = tw.i`

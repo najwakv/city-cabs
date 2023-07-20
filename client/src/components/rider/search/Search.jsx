@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import tw from "tailwind-styled-components";
+import { toast } from "react-hot-toast";
 
 const Search = () => {
   const navigate = useNavigate();
@@ -10,8 +11,16 @@ const Search = () => {
   const [dropoff, setDropoff] = useState("");
 
   const handleConfirm = () => {
-    const query = `pickup=${pickup}&dropoff=${dropoff}`;
-    navigate(`/confirmRide?${query}`);
+    if(pickup && dropoff ){
+      const query = `pickup=${pickup}&dropoff=${dropoff}`;
+      navigate(`/confirmRide?${query}`);
+    } else if(pickup) {
+      toast.error("Please enter the dropoff location")
+    } else if (dropoff ){
+      toast.error("Please enter the pickup location")
+    } else {
+      toast.error("Please enter the locations")
+    }
   };
 
   return (
@@ -42,10 +51,10 @@ const Search = () => {
         </InputBoxes>
         <PlusIcon src="https://img.icons8.com/ios/50/000000/plus-math.png" />
       </InputContainer>
-      <SavedPlaces>
+      {/* <SavedPlaces>
         <StarIcon src="https://img.icons8.com/ios-filled/50/ffffff/star--v1.png" />
         Saved places
-      </SavedPlaces>
+      </SavedPlaces> */}
       <ConfirmButtonContainer onClick={handleConfirm}>
         Confirm Locations
       </ConfirmButtonContainer>
@@ -89,12 +98,12 @@ const PlusIcon = tw.img`
   w-10 h-10 bg-gray-200 rounded-full ml-3 cursor-pointer
   transition duration-300 ease-in-out transform hover:scale-110
 `;
-const SavedPlaces = tw.div`
-flex items-center bg-white px-4 py-2 cursor-pointer
-`;
-const StarIcon = tw.img`
-bg-gray-400 w-10 h-10 p-2 rounded-full mr-2
-`;
+// const SavedPlaces = tw.div`
+// flex items-center bg-white px-4 py-2 cursor-pointer
+// `;
+// const StarIcon = tw.img`
+// bg-gray-400 w-10 h-10 p-2 rounded-full mr-2
+// `;
 const ConfirmButtonContainer = tw.div`
 bg-black text-white text-center mt-4 mx-4 px-4 py-4 text-md cursor-pointer uppercase tracking-wider rounded-md
 `;

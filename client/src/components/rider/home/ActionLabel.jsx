@@ -8,10 +8,10 @@ const UserActionLabel = () => {
         navigate('/search');
       };
     return (
-        <Wrapper>
+        <Wrapper onClick={handleSearchClick}>
             <ActionButton></ActionButton>
             <Labels>
-                <LabelTitle onClick={handleSearchClick}>Where are you going?</LabelTitle>
+                <LabelTitle>Where are you going?</LabelTitle>
             </Labels>
         </Wrapper>
     );
@@ -20,7 +20,7 @@ const UserActionLabel = () => {
 export default UserActionLabel
 
 const Wrapper = tw.a`
-  flex justify-start items-center gap-5 bg-black w-full rounded-lg p-4 mb-3
+  flex justify-start items-center gap-5 bg-black w-full rounded-lg p-4 mb-3 cursor-pointer
 `
 const Labels = tw.div`
     flex-grow-1
